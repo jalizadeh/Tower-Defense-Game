@@ -10,7 +10,35 @@ public class GameTile : MonoBehaviour
 
     //neighbor tiles
     GameTile north, east, south, west;
+    GameTile nextOnPath;
 
+    int distance;
+
+
+
+
+    public void ClearPath()
+    {
+        distance = int.MaxValue;
+        nextOnPath = null;
+    }
+
+
+    public void BecomeDestination()
+    {
+        distance = 0;
+        nextOnPath = null;
+    }
+
+    /*
+     * equal to:
+     * public bool HasPath {
+     *      get {
+     *         return distance != int.MaxValue;
+     *         }
+     * }
+     */
+    public bool HasPath => distance != int.MaxValue;
 
 
     public static void MakeEastWestNeighbors(GameTile east, GameTile west)
