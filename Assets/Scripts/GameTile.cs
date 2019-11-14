@@ -43,6 +43,7 @@ public class GameTile : MonoBehaviour
 
     //For keeping track of path, after checking neighbors,
     // either it returns the neighbor or null
+    //It starts from destination and surfs through neighbors
     GameTile GrowPathTo(GameTile neighbor)
     {
         Debug.Assert(HasPath, "No Path");
@@ -50,6 +51,7 @@ public class GameTile : MonoBehaviour
         {
             return null;
         }
+
         neighbor.distance = distance + 1;
         neighbor.nextOnPath = this;
         return neighbor;

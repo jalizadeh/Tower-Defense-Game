@@ -13,6 +13,10 @@ public class GameBoard : MonoBehaviour
 
     Vector2Int size;
 
+    //we need to access the same order as tiles are inserted
+    Queue<GameTile> searchFrontier = new Queue<GameTile>();
+
+
     public void Initialize(Vector2Int size)
     {
         this.size = size;
@@ -46,7 +50,34 @@ public class GameBoard : MonoBehaviour
                 i++;
             }
         }
+
+
+        FindPaths();
     }
+
+
+    void FindPaths()
+    {
+        foreach (GameTile gt in tiles)
+        {
+            gt.ClearPath();
+        }
+
+        tiles[0].BecomeDestination();
+        searchFrontier.Enqueue(tiles[0]);
+
+        while (searchFrontier.Count > 0)
+        {
+            GameTile tile = searchFrontier.Dequeue();
+            if (tile != null)
+            {
+                searchFrontier.Enqueue(tile.GrowPathToNorth());
+                searchFrontier.Enqueue(tile.GrowPathToEast());
+                searchFrontier.Enqueue(tile.GrowPathToSouth());
+                searchFrontier.Enqueue(tile.GrowPathToWest());
+            }
+        }
+
 
     
 }
