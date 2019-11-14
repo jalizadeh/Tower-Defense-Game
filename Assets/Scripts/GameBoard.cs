@@ -47,40 +47,68 @@ public class GameBoard : MonoBehaviour
                     //Debug.Log("Tile [" + x + "," + y + "] is EW to " + (i - size.x));
                 }
 
+                tile.IsAlternative = (x & 1) == 0;
+                if((y & 1) == 0)
+                {
+                    tile.IsAlternative = !tile.IsAlternative;
+                }
+
+
                 i++;
             }
         }
 
 
-        FindPaths();
+        StartCoroutine(FindPaths());
     }
 
 
-    void FindPaths()
+    IEnumerator FindPaths()
     {
         foreach (GameTile tile in tiles)
         {
             tile.ClearPath();
         }
 
-        tiles[0].BecomeDestination();
-        searchFrontier.Enqueue(tiles[0]);
+        tiles[tiles.Length /2].BecomeDestination();
+        searchFrontier.Enqueue(tiles[tiles.Length / 2]);
 
         while (searchFrontier.Count > 0)
         {
             GameTile tile = searchFrontier.Dequeue();
             if (tile != null)
             {
-                searchFrontier.Enqueue(tile.GrowPathToNorth());
-                searchFrontier.Enqueue(tile.GrowPathToEast());
-                searchFrontier.Enqueue(tile.GrowPathToSouth());
-                searchFrontier.Enqueue(tile.GrowPathToWest());
+                if (tile.IsAlternative)
+                {
+                    searchFrontier.Enqueue(tile.GrowPathToNorth());
+                    searchFrontier.Enqueue(tile.GrowPathToSouth());
+                    searchFrontier.Enqueue(tile.GrowPathToEast());
+                    searchFrontier.Enqueue(tile.GrowPathToWest());
+
+                    yield return new WaitForSeconds(0.3f);
+                    tile.ShowPath();
+                }
+                else
+                {
+                    searchFrontier.Enqueue(tile.GrowPathToEast());
+                    searchFrontier.Enqueue(tile.GrowPathToWest());
+                    searchFrontier.Enqueue(tile.GrowPathToNorth());
+                    searchFrontier.Enqueue(tile.GrowPathToSouth());
+
+                    yield return new WaitForSeconds(0.3f);
+                    tile.ShowPath();
+                }
             }
         }
 
+        /*
         foreach (GameTile tile in tiles)
         {
+            yield return new WaitForSeconds(0.3f);
             tile.ShowPath();
         }
+        */
+
+        
     }
 }

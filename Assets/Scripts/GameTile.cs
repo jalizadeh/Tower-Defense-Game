@@ -21,6 +21,8 @@ public class GameTile : MonoBehaviour
             westRotation = Quaternion.Euler(90f, 270f, 0f);
 
 
+    public bool IsAlternative { get; set; }
+
     public void ClearPath()
     {
         distance = int.MaxValue;
@@ -80,6 +82,9 @@ public class GameTile : MonoBehaviour
         }
 
         arrow.gameObject.SetActive(true);
+
+        //while initializing, I saved all neighbors, so now I can compare
+        // with them, to find which one is the path
         arrow.localRotation =
             nextOnPath == north ? northRotation :
             nextOnPath == east ? eastRotation :
