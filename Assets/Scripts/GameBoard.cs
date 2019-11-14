@@ -19,16 +19,34 @@ public class GameBoard : MonoBehaviour
         ground.localScale = new Vector3(size.x, size.y, 1f);
         tiles = new GameTile[size.x * size.y];
 
-        for (int i = 0; i < size.x; i++)
+        int i = 0;
+        for (int x = 0; x < size.x; x++)
         {
-            for (int j = 0; j < size.y; j++)
+            for (int y = 0; y < size.y; y++)
             {
+                
                 GameTile tile = tiles[i] = Instantiate(tilePrefab,
-                    new Vector3(i - (size.x - 1) * 0.5f, 0f, j - (size.y - 1) * 0.5f),
+                    new Vector3(x - (size.x - 1) * 0.5f, 0f, y - (size.y - 1) * 0.5f),
                     Quaternion.identity);
-                tile.name = "Tile [" + i + "," + j + "]";
+                tile.name = "Tile [" + x + "," + y + "] / " + i;
                 tile.transform.SetParent(transform, false);
+
+                if(y > 0)
+                {
+                    GameTile.MakeNorthSouthNeighbors(tile, tiles[i - 1]);
+                    //Debug.Log("Tile [" + x + "," + y + "] is NS to " + (i - 1));
+                }
+
+                if(x > 0)
+                {
+                    GameTile.MakeEastWestNeighbors(tile, tiles[i - size.x]);
+                    //Debug.Log("Tile [" + x + "," + y + "] is EW to " + (i - size.x));
+                }
+
+                i++;
             }
         }
     }
+
+    
 }
