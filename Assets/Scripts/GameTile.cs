@@ -14,7 +14,11 @@ public class GameTile : MonoBehaviour
 
     int distance;
 
-
+    static Quaternion
+            northRotation = Quaternion.Euler(90f, 0f, 0f),
+            eastRotation = Quaternion.Euler(90f, 90f, 0f),
+            southRotation = Quaternion.Euler(90f, 180f, 0f),
+            westRotation = Quaternion.Euler(90f, 270f, 0f);
 
 
     public void ClearPath()
@@ -67,13 +71,29 @@ public class GameTile : MonoBehaviour
     public GameTile GrowPathToWest() => GrowPathTo(west);
 
 
+    public void ShowPath()
+    {
+        if(distance == 0)
+        {
+            arrow.gameObject.SetActive(false);
+            return;
+        }
+
+        arrow.gameObject.SetActive(true);
+        arrow.localRotation =
+            nextOnPath == north ? northRotation :
+            nextOnPath == east ? eastRotation :
+            nextOnPath == west ? westRotation :
+            southRotation;
+    }
+
     public static void MakeEastWestNeighbors(GameTile east, GameTile west)
     {
         //if the condition is false, it prints the message
         Debug.Assert(east.west == null && west.east == null, "Redefined neighbors");
 
-        west.east = west;
-        east.west = east;
+        west.east = east;
+        east.west = west;
     }
 
     public static void MakeNorthSouthNeighbors(GameTile north, GameTile south)

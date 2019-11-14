@@ -58,9 +58,9 @@ public class GameBoard : MonoBehaviour
 
     void FindPaths()
     {
-        foreach (GameTile gt in tiles)
+        foreach (GameTile tile in tiles)
         {
-            gt.ClearPath();
+            tile.ClearPath();
         }
 
         tiles[0].BecomeDestination();
@@ -78,6 +78,9 @@ public class GameBoard : MonoBehaviour
             }
         }
 
-
-    
+        foreach (GameTile tile in tiles)
+        {
+            tile.ShowPath();
+        }
+    }
 }
