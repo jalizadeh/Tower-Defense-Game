@@ -41,6 +41,30 @@ public class GameTile : MonoBehaviour
     public bool HasPath => distance != int.MaxValue;
 
 
+    //For keeping track of path, after checking neighbors,
+    // either it returns the neighbor or null
+    GameTile GrowPathTo(GameTile neighbor)
+    {
+        Debug.Assert(HasPath, "No Path");
+        if(neighbor == null || neighbor.HasPath)
+        {
+            return null;
+        }
+        neighbor.distance = distance + 1;
+        neighbor.nextOnPath = this;
+        return neighbor;
+    }
+
+
+    public GameTile GrowPathToNorth() => GrowPathTo(north);
+
+    public GameTile GrowPathToSouth() => GrowPathTo(south);
+
+    public GameTile GrowPathToEast() => GrowPathTo(east);
+
+    public GameTile GrowPathToWest() => GrowPathTo(west);
+
+
     public static void MakeEastWestNeighbors(GameTile east, GameTile west)
     {
         //if the condition is false, it prints the message
