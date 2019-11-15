@@ -15,6 +15,7 @@ public class Game : MonoBehaviour
     [SerializeField]
     GameTileContentFactory tileContentFactory = default;
 
+    Ray TouchRay => Camera.main.ScreenPointToRay(Input.mousePosition);
 
 
     private void OnValidate()
@@ -32,6 +33,23 @@ public class Game : MonoBehaviour
 
     private void Awake()
     {
-        gameBoard.Initialize(boardSize);
+        gameBoard.Initialize(boardSize, tileContentFactory);
+    }
+
+    private void Update()
+    {
+        if (Input.GetMouseButtonDown(0))
+        {
+            HandleTouch();
+        }
+    }
+
+    void HandleTouch()
+    {
+        GameTile tile = gameBoard.GetTile(TouchRay);
+        if(tile != null)
+        {
+            gameBoard.ToggleDestination(tile);
+        }
     }
 }

@@ -23,6 +23,27 @@ public class GameTile : MonoBehaviour
 
     public bool IsAlternative { get; set; }
 
+    GameTileContent content;
+
+    public GameTileContent Content
+    {
+        get => content;
+
+        set
+        {
+            Debug.Assert(value != null, "Null assigned content");
+
+            if(content != null)
+            {
+                content.Recycle();
+            }
+
+            content = value;
+            content.transform.localPosition = transform.localPosition;
+        }
+    }
+
+
     public void ClearPath()
     {
         distance = int.MaxValue;
@@ -109,4 +130,7 @@ public class GameTile : MonoBehaviour
         south.north = north;
         north.south = south;
     }
+
+
+    
 }

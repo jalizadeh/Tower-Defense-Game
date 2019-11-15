@@ -16,10 +16,13 @@ public class GameBoard : MonoBehaviour
     //we need to access the same order as tiles are inserted
     Queue<GameTile> searchFrontier = new Queue<GameTile>();
 
+    GameTileContentFactory contentFactory;
 
-    public void Initialize(Vector2Int size)
+
+    public void Initialize(Vector2Int size, GameTileContentFactory contentFactory)
     {
         this.size = size;
+        this.contentFactory = contentFactory;
         ground.localScale = new Vector3(size.x, size.y, 1f);
         tiles = new GameTile[size.x * size.y];
 
@@ -53,25 +56,31 @@ public class GameBoard : MonoBehaviour
                     tile.IsAlternative = !tile.IsAlternative;
                 }
 
+                //by default all tiles are set to Empty
+                tile.Content = contentFactory.Get(GameTileContentType.Empty);
 
                 i++;
             }
         }
 
-
-        StartCoroutine(FindPaths());
+        //start with a default destination at the center
+        ToggleDestination(tiles[tiles.Length / 2]);
     }
 
 
-    IEnumerator FindPaths()
+    bool FindPaths()
     {
         foreach (GameTile tile in tiles)
         {
-            tile.ClearPath();
+            if(tile.Content.Type == GameTileContentType.Destination)
+            {
+                tile.BecomeDestination();
+                searchFrontier.Enqueue(tile);
+            } else
+            {
+                tile.ClearPath();
+            }
         }
-
-        tiles[tiles.Length /2].BecomeDestination();
-        searchFrontier.Enqueue(tiles[tiles.Length / 2]);
 
         while (searchFrontier.Count > 0)
         {
@@ -84,9 +93,6 @@ public class GameBoard : MonoBehaviour
                     searchFrontier.Enqueue(tile.GrowPathToSouth());
                     searchFrontier.Enqueue(tile.GrowPathToEast());
                     searchFrontier.Enqueue(tile.GrowPathToWest());
-
-                    yield return new WaitForSeconds(0.3f);
-                    tile.ShowPath();
                 }
                 else
                 {
@@ -94,21 +100,59 @@ public class GameBoard : MonoBehaviour
                     searchFrontier.Enqueue(tile.GrowPathToWest());
                     searchFrontier.Enqueue(tile.GrowPathToNorth());
                     searchFrontier.Enqueue(tile.GrowPathToSouth());
-
-                    yield return new WaitForSeconds(0.3f);
-                    tile.ShowPath();
                 }
             }
         }
 
-        /*
+        
         foreach (GameTile tile in tiles)
         {
-            yield return new WaitForSeconds(0.3f);
             tile.ShowPath();
         }
-        */
 
-        
+        if (searchFrontier.Count == 0)
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+
+    //Get the tile based on mouse position
+    public GameTile GetTile(Ray ray)
+    {
+        if (Physics.Raycast(ray, out RaycastHit hit))
+        {
+            int x = (int)(hit.point.x + size.x * 0.5f);
+            int y = (int)(hit.point.z + size.y * 0.5f);
+
+            if (x >= 0 && x < size.x && y >= 0 && y < size.y)
+            {
+                return tiles[x * size.x + y];
+            }
+        }
+        return null;
+    }
+
+
+    public void ToggleDestination(GameTile tile)
+    {
+        if(tile.Content.Type == GameTileContentType.Destination)
+        {
+            tile.Content = contentFactory.Get(GameTileContentType.Empty);
+            /*
+            if (!FindPaths())
+            {
+                tile.Content = contentFactory.Get(GameTileContentType.Destination);
+                FindPaths();
+            }
+            */
+            FindPaths();
+        } else
+        {
+            tile.Content = contentFactory.Get(GameTileContentType.Destination);
+            FindPaths();
+        }
     }
 }
