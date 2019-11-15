@@ -24,7 +24,6 @@ public class GameTile : MonoBehaviour
     public bool IsAlternative { get; set; }
 
     GameTileContent content;
-
     public GameTileContent Content
     {
         get => content;

@@ -292,6 +292,7 @@ MonoBehaviour:
   boardSize: {x: 11, y: 11}
   gameBoard: {fileID: 250764206}
   tileContentFactory: {fileID: 11400000, guid: f574f27233f596741b11731f9b0684c5, type: 2}
+  enemyFactory: {fileID: 11400000, guid: 3ca1682ef944a314ba5ce78965696015, type: 2}
 --- !u!4 &641927145
 Transform:
   m_ObjectHideFlags: 0

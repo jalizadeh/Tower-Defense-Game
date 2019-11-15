@@ -46,7 +46,6 @@ public class GameBoard : MonoBehaviour
         }
     }
 
-
     bool showGrid;
     public bool ShowGrid
     {
