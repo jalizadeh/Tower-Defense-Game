@@ -11,6 +11,10 @@ public class GameBoard : MonoBehaviour
     GameTile tilePrefab = default;
     GameTile[] tiles;
 
+    [SerializeField]
+    Texture2D gridTexture = default;
+
+
     Vector2Int size;
 
     //we need to access the same order as tiles are inserted
@@ -38,6 +42,28 @@ public class GameBoard : MonoBehaviour
                 {
                     tile.HidePath();
                 }
+            }
+        }
+    }
+
+
+    bool showGrid;
+    public bool ShowGrid
+    {
+        get => showGrid;
+
+        set
+        {
+            showGrid = value;
+            Material m = ground.GetComponent<MeshRenderer>().material;
+            if (showGrid)
+            {
+                m.mainTexture = gridTexture;
+                m.SetTextureScale("_MainTex", size);
+            }
+            else
+            {
+                m.mainTexture = null;
             }
         }
     }
