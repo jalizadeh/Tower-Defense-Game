@@ -2,5 +2,6 @@
 {
     Empty,
     Destination,
-    Wall
+    Wall,
+    SpawnPoint
 }

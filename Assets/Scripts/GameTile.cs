@@ -137,7 +137,4 @@ public class GameTile : MonoBehaviour
         south.north = north;
         north.south = south;
     }
-
-
-    
 }

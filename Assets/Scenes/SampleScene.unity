@@ -289,7 +289,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 578c7af911a3a6548a92e12c58a56299, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  boardSize: {x: 20, y: 20}
+  boardSize: {x: 11, y: 11}
   gameBoard: {fileID: 250764206}
   tileContentFactory: {fileID: 11400000, guid: f574f27233f596741b11731f9b0684c5, type: 2}
 --- !u!4 &641927145
