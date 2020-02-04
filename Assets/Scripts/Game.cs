@@ -25,6 +25,8 @@ public class Game : MonoBehaviour
 
     Ray TouchRay => Camera.main.ScreenPointToRay(Input.mousePosition);
 
+    EnemyCollection enemyCollection = new EnemyCollection();
+
 
     //If anything changes in the inspector, run it
     private void OnValidate()
@@ -68,6 +70,8 @@ public class Game : MonoBehaviour
         }
 
 
+        enemyCollection.GameUpdate();
+
         spawnProgress += spawnSpeed * Time.deltaTime;
         if(spawnProgress >= 1f)
         {
@@ -81,6 +85,7 @@ public class Game : MonoBehaviour
     {
         GameTile spawnPoint = gameBoard.GetSpawnPoint(Random.Range(0, gameBoard.spawnPointsCount));
         Enemy enemy = enemyFactory.Get();
+        enemyCollection.AddEnemy(enemy);
         enemy.SpawnOn(spawnPoint);
     }
 
@@ -90,8 +95,18 @@ public class Game : MonoBehaviour
         GameTile tile = gameBoard.GetTile(TouchRay);
         if(tile != null)
         {
-            gameBoard.ToggleWall(tile);
+            if (Input.GetKey(KeyCode.LeftShift))
+            {
+                gameBoard.ToggleTower(tile);
+            }
+            else
+            {
+                gameBoard.ToggleWall(tile);
+            }
+            
         }
+
+
     }
 
     void HandleAlternativeTouch()

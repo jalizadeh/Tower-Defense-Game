@@ -10,7 +10,15 @@ public class GameTile : MonoBehaviour
 
     //neighbor tiles
     GameTile north, east, south, west;
+
     GameTile nextOnPath;
+    public GameTile NextTileOnPath => nextOnPath;
+
+    public Vector3 ExitPoint
+    {
+        get;
+        private set;
+    }
 
     int distance;
 
@@ -43,6 +51,25 @@ public class GameTile : MonoBehaviour
     }
 
 
+    /*
+     * equal to:
+     * public bool HasPath {
+     *      get {
+     *         return distance != int.MaxValue;
+     *         }
+     * }
+     */
+    public bool HasPath => distance != int.MaxValue;
+
+    public Direction PathDirection
+    {
+        get;
+        private set;
+    }
+
+
+    //------------------------------------------------------------
+
     public void ClearPath()
     {
         distance = int.MaxValue;
@@ -54,23 +81,14 @@ public class GameTile : MonoBehaviour
     {
         distance = 0;
         nextOnPath = null;
+        ExitPoint = transform.localPosition;
     }
-
-    /*
-     * equal to:
-     * public bool HasPath {
-     *      get {
-     *         return distance != int.MaxValue;
-     *         }
-     * }
-     */
-    public bool HasPath => distance != int.MaxValue;
 
 
     //For keeping track of path, after checking neighbors,
     // either it returns the neighbor or null
     //It starts from destination and surfs through neighbors
-    GameTile GrowPathTo(GameTile neighbor)
+    GameTile GrowPathTo(GameTile neighbor, Direction direction)
     {
         Debug.Assert(HasPath, "No Path");
         if(neighbor == null || neighbor.HasPath || !HasPath)
@@ -80,19 +98,23 @@ public class GameTile : MonoBehaviour
 
         neighbor.distance = distance + 1;
         neighbor.nextOnPath = this;
-        
+        neighbor.PathDirection = direction;
+        neighbor.ExitPoint = (transform.localPosition + neighbor.transform.localPosition) * 0.5f;
+
         //if the neighbor is not a wall, return it
-        return neighbor.content.Type != GameTileContentType.Wall ? neighbor : null;
+        return neighbor.Content.BlockPath ? null : neighbor;
     }
 
 
-    public GameTile GrowPathToNorth() => GrowPathTo(north);
+    //The directions are opposite, which means:
+    // `this tile is located X of the neighbor`
+    public GameTile GrowPathToNorth() => GrowPathTo(north, Direction.South);
 
-    public GameTile GrowPathToSouth() => GrowPathTo(south);
+    public GameTile GrowPathToSouth() => GrowPathTo(south, Direction.North);
 
-    public GameTile GrowPathToEast() => GrowPathTo(east);
+    public GameTile GrowPathToEast() => GrowPathTo(east, Direction.West);
 
-    public GameTile GrowPathToWest() => GrowPathTo(west);
+    public GameTile GrowPathToWest() => GrowPathTo(west, Direction.East);
 
 
     public void ShowPath()

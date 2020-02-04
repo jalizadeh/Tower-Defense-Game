@@ -10,6 +10,9 @@ public class GameTileContent : MonoBehaviour
 
     public GameTileContentType Type => type;
 
+    public bool BlockPath =>
+        Type == GameTileContentType.Wall || Type == GameTileContentType.Tower;
+
     GameTileContentFactory originFactory;
 
     public GameTileContentFactory OriginFactory

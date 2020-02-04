@@ -204,7 +204,9 @@ public class GameBoard : MonoBehaviour
         return null;
     }
 
-
+    // check if the tile is destination, if it is already a destination,
+    // make it empty, but check immediately if the path is OK,
+    // else bring it back; toggling is not possible
     public void ToggleDestination(GameTile tile)
     {
         if (tile.Content.Type == GameTileContentType.Destination)
@@ -223,15 +225,10 @@ public class GameBoard : MonoBehaviour
         }
     }
 
-
+    // behaves like ToggleDestination
     public void ToggleWall(GameTile tile)
     {
-        if (tile.Content.Type == GameTileContentType.Wall)
-        {
-            tile.Content = contentFactory.Get(GameTileContentType.Empty);
-            FindPaths();
-        }
-        else if (tile.Content.Type == GameTileContentType.Empty)
+        if (tile.Content.Type == GameTileContentType.Empty)
         {
             tile.Content = contentFactory.Get(GameTileContentType.Wall);
             if (!FindPaths())
@@ -239,9 +236,36 @@ public class GameBoard : MonoBehaviour
                 tile.Content = contentFactory.Get(GameTileContentType.Empty);
                 FindPaths();
             }
+        } 
+        else if (tile.Content.Type == GameTileContentType.Wall)
+        {
+            tile.Content = contentFactory.Get(GameTileContentType.Empty);
+            FindPaths();
         }
     }
 
+    public void ToggleTower(GameTile tile)
+    {
+        if (tile.Content.Type == GameTileContentType.Empty)
+        {
+            tile.Content = contentFactory.Get(GameTileContentType.Tower);
+            if (!FindPaths())
+            {
+                tile.Content = contentFactory.Get(GameTileContentType.Empty);
+                FindPaths();
+            }
+        }
+        //change directly to a tower
+        else if (tile.Content.Type == GameTileContentType.Wall)
+        {
+            tile.Content = contentFactory.Get(GameTileContentType.Tower);
+        }
+        else if (tile.Content.Type == GameTileContentType.Tower)
+        {
+            tile.Content = contentFactory.Get(GameTileContentType.Empty);
+            FindPaths();
+        }
+    }
 
     //Spawn points won't affect the pathfindings, so just add or remove it
     public void ToggleSpawnPoint(GameTile tile)
